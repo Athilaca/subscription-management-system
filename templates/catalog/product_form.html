@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{% if object %}Edit{% else %}Add{% endif %} product — Brightloop{% endblock %}
+{% block content %}
+  <div class="card card--wide">
+    <h1>{% if object %}Edit product{% else %}Add product{% endif %}</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <h2 style="font-size:16px;">Variants</h2>
+      <p class="help-text">
+        Variant adjustments are added to the sales price — e.g. the “Odoo” brand adds 560.00.
+        Leave the name empty to skip a row.
+      </p>
+      {{ variant_formset.management_form }}
+      {{ variant_formset.as_p }}
+      <button class="btn" type="submit">Save product</button>
+      <a class="btn btn--secondary" href="{% url 'catalog:product-list' %}">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

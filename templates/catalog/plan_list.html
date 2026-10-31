@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Plans — Brightloop{% endblock %}
+{% block content %}
+  <h1>Plans</h1>
+  {% if user.is_admin %}
+    <p><a class="btn" href="{% url 'catalog:plan-create' %}">Add plan</a></p>
+  {% endif %}
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th><th>Billing</th><th>Price</th><th>Min qty</th><th>Available</th>
+        <th>Auto-close</th><th>Close early</th><th>Pause</th><th>Renew</th><th>Active</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for plan in plans %}
+        <tr>
+          <td>{{ plan.name }}</td>
+          <td>{{ plan.get_billing_period_display }}</td>
+          <td>{{ plan.price }}</td>
+          <td>{{ plan.min_quantity }}</td>
+          <td>{{ plan.available_from|date:"Y-m-d"|default:"—" }} → {{ plan.available_until|date:"Y-m-d"|default:"—" }}</td>
+          <td>{{ plan.auto_close_on_end|yesno:"Yes,No" }}</td>
+          <td>{{ plan.allow_close_early|yesno:"Yes,No" }}</td>
+          <td>{{ plan.allow_pause|yesno:"Yes,No" }}</td>
+          <td>{{ plan.allow_renewal|yesno:"Yes,No" }}</td>
+          <td>{{ plan.is_active|yesno:"Yes,No" }}</td>
+          <td>
+            {% if user.is_admin %}
+              <a href="{% url 'catalog:plan-update' plan.pk %}">Edit</a>
+              <a href="{% url 'catalog:plan-delete' plan.pk %}">Delete</a>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="11">No plans yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if is_paginated %}{% include "catalog/_pagination.html" %}{% endif %}
+{% endblock %}

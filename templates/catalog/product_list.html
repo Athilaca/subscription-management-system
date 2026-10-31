@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Products — Brightloop{% endblock %}
+{% block content %}
+  <h1>Products</h1>
+  {% if user.is_admin %}
+    <p><a class="btn" href="{% url 'catalog:product-create' %}">Add product</a></p>
+  {% endif %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Type</th><th>Sales price</th><th>Cost price</th><th>Variants</th><th>Active</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for product in products %}
+        <tr>
+          <td>{{ product.name }}</td>
+          <td>{{ product.get_product_type_display }}</td>
+          <td>{{ product.sales_price }}</td>
+          <td>{{ product.cost_price }}</td>
+          <td>
+            {% for variant in product.variants.all %}
+              {{ variant.name }}{% if variant.price_adjustment %} ({{ variant.price_adjustment|floatformat:2 }}){% endif %}{% if not forloop.last %}, {% endif %}
+            {% empty %}—{% endfor %}
+          </td>
+          <td>{{ product.is_active|yesno:"Yes,No" }}</td>
+          <td>
+            {% if user.is_admin %}
+              <a href="{% url 'catalog:product-update' product.pk %}">Edit</a>
+              <a href="{% url 'catalog:product-delete' product.pk %}">Delete</a>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7">No products yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if is_paginated %}{% include "catalog/_pagination.html" %}{% endif %}
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Delete product — Brightloop{% endblock %}
+{% block content %}
+  <div class="card">
+    <h1>Delete product</h1>
+    <p>Are you sure you want to delete “{{ object.name }}”? This also removes its variants.</p>
+    <form method="post">
+      {% csrf_token %}
+      <button class="btn" type="submit">Yes, delete</button>
+      <a class="btn btn--secondary" href="{% url 'catalog:product-list' %}">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{% if object %}Edit{% else %}Add{% endif %} plan — Brightloop{% endblock %}
+{% block content %}
+  <div class="card card--wide">
+    <h1>{% if object %}Edit plan{% else %}Add plan{% endif %}</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn" type="submit">Save plan</button>
+      <a class="btn btn--secondary" href="{% url 'catalog:plan-list' %}">Cancel</a>
+    </form>
+  </div>
+{% endblock %}
