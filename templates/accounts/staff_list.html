@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Staff — Brightloop{% endblock %}
+{% block content %}
+  <h1>Staff accounts</h1>
+  <p><a class="btn" href="{% url 'accounts:staff-create' %}">Add staff member</a></p>
+  <table>
+    <thead>
+      <tr><th>Email</th><th>Name</th><th>Phone</th><th>Active</th><th>Joined</th></tr>
+    </thead>
+    <tbody>
+      {% for member in staff_members %}
+        <tr>
+          <td>{{ member.email }}</td>
+          <td>{{ member.first_name }} {{ member.last_name }}</td>
+          <td>{{ member.phone|default:"—" }}</td>
+          <td>{{ member.is_active|yesno:"Yes,No" }}</td>
+          <td>{{ member.date_joined|date:"Y-m-d" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5">No staff accounts yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

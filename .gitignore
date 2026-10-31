@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Environments
+.env
+.venv/
+venv/
+
+# Django
+staticfiles/
+media/
+db.sqlite3
+
+# Testing / tooling
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Celery beat runtime schedule (written via the bind mount)
+celerybeat-schedule
+celerybeat-schedule-shm
+celerybeat-schedule-wal
+celerybeat-schedule.pid
+
+# Editors / OS
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+.DS_Store

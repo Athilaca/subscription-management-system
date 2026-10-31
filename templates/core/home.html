@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Brightloop — Home{% endblock %}
+{% block content %}
+  <h1>Welcome, {{ user.email }}</h1>
+  <div class="card card--wide">
+    <p>
+      You are signed in as <strong>{{ user.get_role_display }}</strong>.
+      This landing page will become the finance dashboard in Sprint 5 — until
+      then, use the navigation above.
+    </p>
+    {% if user.is_admin %}
+      <p>As an admin you can manage <a href="{% url 'accounts:staff-list' %}">staff accounts</a>
+      and will manage products, plans, discounts and tax rules in upcoming sprints.</p>
+    {% elif user.role == 'staff' %}
+      <p>As staff you will handle subscriptions, invoices and payments in upcoming sprints.</p>
+    {% else %}
+      <p>As a customer you will see your subscriptions and invoices in the portal in upcoming sprints.</p>
+    {% endif %}
+  </div>
+{% endblock %}

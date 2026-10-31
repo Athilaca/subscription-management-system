@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Brightloop{% endblock %}</title>
+  <style>
+    :root {
+      --bg: #f6f7fb; --surface: #ffffff; --border: #e3e6ee;
+      --text: #1c2333; --muted: #6b7280; --accent: #4f46e5; --accent-dark: #3f38c9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.5;
+    }
+    header.topbar {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 0 24px; display: flex; align-items: center; gap: 24px; height: 56px;
+    }
+    .brand { font-weight: 700; font-size: 18px; color: var(--accent); text-decoration: none; }
+    nav a { color: var(--text); text-decoration: none; padding: 6px 10px; border-radius: 6px; }
+    nav a:hover { background: var(--bg); }
+    .spacer { flex: 1; }
+    .userbox { color: var(--muted); font-size: 13px; }
+    .userbox form { display: inline; }
+    main { max-width: 1100px; margin: 32px auto; padding: 0 16px; }
+    h1 { font-size: 22px; margin: 0 0 20px; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 24px; max-width: 480px; margin: 40px auto;
+    }
+    .card--wide { max-width: none; margin: 0; }
+    table { width: 100%; border-collapse: collapse; background: var(--surface);
+            border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+    th { background: #fafbfe; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    tr:last-child td { border-bottom: none; }
+    .btn {
+      display: inline-block; background: var(--accent); color: #fff; border: none;
+      padding: 9px 16px; border-radius: 8px; font-size: 14px; cursor: pointer; text-decoration: none;
+    }
+    .btn:hover { background: var(--accent-dark); }
+    .btn--secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+    .btn--secondary:hover { background: #eef0ff; }
+    form p { margin: 0 0 14px; }
+    label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+    input[type="text"], input[type="email"], input[type="password"], input[type="number"], select, textarea {
+      width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px;
+      font-size: 14px; font-family: inherit; background: #fff;
+    }
+    .errorlist { color: #b42318; font-size: 13px; margin: 4px 0 0; padding: 0; list-style: none; }
+    .messages { list-style: none; padding: 0; margin: 0 0 20px; }
+    .messages li { padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; font-size: 14px; }
+    .messages li.success { background: #e6f4ea; color: #1e7b34; }
+    .messages li.error { background: #fdecea; color: #b42318; }
+    .help-text { color: var(--muted); font-size: 12px; }
+    .auth-links { text-align: center; margin-top: 16px; font-size: 14px; }
+    .auth-links a { color: var(--accent); }
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px;
+             background: #eef0ff; color: var(--accent); }
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="{% url 'home' %}">Brightloop</a>
+  {% if user.is_authenticated %}
+  <nav>
+    {% if user.is_staff_member %}
+      <a href="{% url 'accounts:staff-list' %}">Staff</a>
+    {% endif %}
+    <a href="{% url 'accounts:password-change' %}">Password</a>
+  </nav>
+  {% endif %}
+  <span class="spacer"></span>
+  {% if user.is_authenticated %}
+    <span class="userbox">{{ user.email }} · <span class="badge">{{ user.get_role_display }}</span></span>
+    <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}
+      <button class="btn btn--secondary" type="submit">Log out</button>
+    </form>
+  {% else %}
+    <a class="btn btn--secondary" href="{% url 'accounts:login' %}">Log in</a>
+  {% endif %}
+</header>
+<main>
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>
