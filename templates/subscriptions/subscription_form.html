@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{% if object %}Edit {{ object.number }}{% else %}New subscription{% endif %} — Brightloop{% endblock %}
+{% block content %}
+  <div class="card card--wide">
+    <h1>{% if object %}Edit {{ object.number }}{% elif template_name %}New subscription — from “{{ template_name }}”{% else %}New subscription{% endif %}</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <h2 style="font-size:16px;">Lines</h2>
+      {{ line_formset.management_form }}
+      {{ line_formset.as_p }}
+      <button class="btn" type="submit">Save subscription</button>
+      <a class="btn btn--secondary" href="{% url 'subscriptions:subscription-list' %}">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

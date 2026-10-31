@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ subscription.number }} — Brightloop{% endblock %}
+{% block content %}
+  <h1>{{ subscription.number }}
+    <span class="badge">{{ subscription.get_status_display }}</span>
+  </h1>
+  <div class="card card--wide">
+    <table>
+      <tr><th>Customer</th><td>{{ subscription.customer.email }}</td></tr>
+      <tr><th>Plan</th><td>{{ subscription.plan }} · qty {{ subscription.quantity }}</td></tr>
+      <tr><th>Start / expiry</th><td>{{ subscription.start_date }} → {{ subscription.expiry_date|default:"—" }}</td></tr>
+      <tr><th>Payment terms</th><td>{% if subscription.payment_terms_days %}Net {{ subscription.payment_terms_days }} days{% else %}Due on receipt{% endif %}</td></tr>
+      {% if subscription.valid_until %}<tr><th>Quotation valid until</th><td>{{ subscription.valid_until }}</td></tr>{% endif %}
+      <tr><th>Next billing</th><td>{{ subscription.next_billing_date|default:"—" }}</td></tr>
+      <tr><th>Owner</th><td>{{ subscription.owner.email|default:"—" }}</td></tr>
+      {% if subscription.notes %}<tr><th>Notes</th><td>{{ subscription.notes }}</td></tr>{% endif %}
+    </table>
+
+    <h2 style="font-size:16px; margin-top:24px;">Lines</h2>
+    <table>
+      <thead>
+        <tr><th>Product</th><th>Variants</th><th>Qty</th><th>Unit price</th><th>Tax rate</th><th>Amount</th></tr>
+      </thead>
+      <tbody>
+        {% for line in subscription.lines.all %}
+          <tr>
+            <td>{{ line.product.name }}</td>
+            <td>
+              {% for sel in line.variant_selections.all %}
+                {{ sel.variant.name }}{% if sel.price_adjustment %} (+{{ sel.price_adjustment }}){% endif %}{% if not forloop.last %}, {% endif %}
+              {% empty %}—{% endfor %}
+            </td>
+            <td>{{ line.quantity }}</td>
+            <td>{{ line.unit_price }}</td>
+            <td>{{ line.tax_rate|floatformat:4 }}</td>
+            <td>{{ line.amount }}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="6">No lines.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div style="margin-top:24px; display:flex; gap:8px;">
+      {% if subscription.status == 'draft' or subscription.status == 'quotation' %}
+        <a class="btn btn--secondary" href="{% url 'subscriptions:subscription-update' subscription.pk %}">Edit</a>
+      {% endif %}
+      {% for action in allowed_actions %}
+        <form method="post" action="{% url 'subscriptions:subscription-transition' subscription.pk action.target %}">
+          {% csrf_token %}
+          <button class="btn" type="submit">{{ action.label }}</button>
+        </form>
+      {% endfor %}
+      {% if can_renew %}
+        <form method="post" action="{% url 'subscriptions:subscription-renew' subscription.pk %}">
+          {% csrf_token %}
+          <button class="btn" type="submit">Renew</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

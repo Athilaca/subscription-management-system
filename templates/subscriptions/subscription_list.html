@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Subscriptions — Brightloop{% endblock %}
+{% block content %}
+  <h1>Subscriptions</h1>
+  <p><a class="btn" href="{% url 'subscriptions:subscription-create' %}">New subscription</a></p>
+  <form method="get" style="display:flex; gap:8px; margin-bottom:16px;">
+    <input type="text" name="q" placeholder="Number or customer email" value="{{ search }}" style="max-width:260px;">
+    <select name="status">
+      <option value="">All statuses</option>
+      {% for value, label in status_choices %}
+        <option value="{{ value }}" {% if value == current_status %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn btn--secondary" type="submit">Filter</button>
+  </form>
+  <table>
+    <thead>
+      <tr><th>Number</th><th>Customer</th><th>Plan</th><th>Status</th><th>Start</th><th>Expiry</th><th>Next billing</th><th>Owner</th></tr>
+    </thead>
+    <tbody>
+      {% for sub in subscriptions %}
+        <tr>
+          <td><a href="{% url 'subscriptions:subscription-detail' sub.pk %}">{{ sub.number }}</a></td>
+          <td>{{ sub.customer.email }}</td>
+          <td>{{ sub.plan.name }}</td>
+          <td><span class="badge">{{ sub.get_status_display }}</span></td>
+          <td>{{ sub.start_date }}</td>
+          <td>{{ sub.expiry_date|default:"—" }}</td>
+          <td>{{ sub.next_billing_date|default:"—" }}</td>
+          <td>{{ sub.owner.email|default:"—" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="8">No subscriptions found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if is_paginated %}{% include "catalog/_pagination.html" %}{% endif %}
+{% endblock %}
