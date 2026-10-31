@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{% if object %}Edit{% else %}Add{% endif %} tax rule — Brightloop{% endblock %}
+{% block content %}
+  <div class="card">
+    <h1>{% if object %}Edit tax rule{% else %}Add tax rule{% endif %}</h1>
+    <p class="help-text">Rate is a fraction: 0.1500 means 15%.</p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn" type="submit">Save tax rule</button>
+      <a class="btn btn--secondary" href="{% url 'catalog:taxrule-list' %}">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

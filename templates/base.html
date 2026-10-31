@@ -67,6 +67,9 @@
   {% if user.is_authenticated %}
   <nav>
     {% if user.is_staff_member %}
+      <a href="{% url 'catalog:product-list' %}">Products</a>
+      <a href="{% url 'catalog:plan-list' %}">Plans</a>
+      <a href="{% url 'catalog:taxrule-list' %}">Tax rules</a>
       <a href="{% url 'accounts:staff-list' %}">Staff</a>
     {% endif %}
     <a href="{% url 'accounts:password-change' %}">Password</a>
