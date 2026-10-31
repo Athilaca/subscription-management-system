@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}My subscriptions — Brightloop{% endblock %}
+{% block content %}
+  <h1>My subscriptions</h1>
+  <table>
+    <thead>
+      <tr><th>Number</th><th>Plan</th><th>Status</th><th>Start</th><th>Expiry</th></tr>
+    </thead>
+    <tbody>
+      {% for sub in subscriptions %}
+        <tr>
+          <td><a href="{% url 'subscriptions:portal-subscription-detail' sub.pk %}">{{ sub.number }}</a></td>
+          <td>{{ sub.plan.name }}</td>
+          <td><span class="badge">{{ sub.get_status_display }}</span></td>
+          <td>{{ sub.start_date }}</td>
+          <td>{{ sub.expiry_date|default:"—" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5">You have no subscriptions yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if is_paginated %}{% include "catalog/_pagination.html" %}{% endif %}
+{% endblock %}

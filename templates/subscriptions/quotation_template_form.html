@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{% if object %}Edit{% else %}Add{% endif %} quotation template — Brightloop{% endblock %}
+{% block content %}
+  <div class="card card--wide">
+    <h1>{% if object %}Edit quotation template{% else %}Add quotation template{% endif %}</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <h2 style="font-size:16px;">Lines</h2>
+      {{ line_formset.management_form }}
+      {{ line_formset.as_p }}
+      <button class="btn" type="submit">Save template</button>
+      <a class="btn btn--secondary" href="{% url 'subscriptions:template-list' %}">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

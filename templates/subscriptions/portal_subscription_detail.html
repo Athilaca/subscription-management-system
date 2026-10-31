@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ subscription.number }} — Brightloop{% endblock %}
+{% block content %}
+  <h1>{{ subscription.number }} <span class="badge">{{ subscription.get_status_display }}</span></h1>
+  <div class="card card--wide">
+    <table>
+      <tr><th>Plan</th><td>{{ subscription.plan }} · qty {{ subscription.quantity }}</td></tr>
+      <tr><th>Start / expiry</th><td>{{ subscription.start_date }} → {{ subscription.expiry_date|default:"—" }}</td></tr>
+      <tr><th>Next billing</th><td>{{ subscription.next_billing_date|default:"—" }}</td></tr>
+    </table>
+    <h2 style="font-size:16px; margin-top:24px;">What's included</h2>
+    <table>
+      <thead>
+        <tr><th>Product</th><th>Variants</th><th>Qty</th><th>Unit price</th><th>Amount</th></tr>
+      </thead>
+      <tbody>
+        {% for line in subscription.lines.all %}
+          <tr>
+            <td>{{ line.product.name }}</td>
+            <td>
+              {% for sel in line.variant_selections.all %}
+                {{ sel.variant.name }}{% if not forloop.last %}, {% endif %}
+              {% empty %}—{% endfor %}
+            </td>
+            <td>{{ line.quantity }}</td>
+            <td>{{ line.unit_price }}</td>
+            <td>{{ line.amount }}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="5">No lines.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p style="margin-top:16px;">
+      <a class="btn btn--secondary" href="{% url 'subscriptions:portal-subscription-list' %}">Back to my subscriptions</a>
+    </p>
+  </div>
+{% endblock %}

@@ -67,10 +67,14 @@
   {% if user.is_authenticated %}
   <nav>
     {% if user.is_staff_member %}
+      <a href="{% url 'subscriptions:subscription-list' %}">Subscriptions</a>
+      <a href="{% url 'subscriptions:template-list' %}">Quote templates</a>
       <a href="{% url 'catalog:product-list' %}">Products</a>
       <a href="{% url 'catalog:plan-list' %}">Plans</a>
       <a href="{% url 'catalog:taxrule-list' %}">Tax rules</a>
       <a href="{% url 'accounts:staff-list' %}">Staff</a>
+    {% else %}
+      <a href="{% url 'subscriptions:portal-subscription-list' %}">My subscriptions</a>
     {% endif %}
     <a href="{% url 'accounts:password-change' %}">Password</a>
   </nav>
